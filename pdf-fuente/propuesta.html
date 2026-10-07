@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Propuesta de rediseño web · GetRebelEdits</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+  /* Formato para leer en celular: 120 × 213 mm, cuerpo 13 pt */
+  @page { size: 120mm 213mm; margin: 13mm 12mm 14mm; }
+  @page :first { margin: 0; }
+  :root { --ink:#0c0d0d; --muted:#55554f; --line:#dedcd3; --mint:#0ff7a4; --mint-ink:#05734c; --tint:#efeee8; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin:0; font-family:"Inter",sans-serif; font-size:13pt; line-height:1.45; color:var(--ink); }
+  h1,h2,h3 { font-family:"Inter Tight","Inter",sans-serif; letter-spacing:-.015em; margin:0; break-after:avoid; break-inside:avoid; }
+  em { font-family:"Instrument Serif",Georgia,serif; font-style:italic; font-weight:400; }
+  p { margin:0 0 3mm; }
+  ul, ol { margin:0 0 3mm; padding-left:5mm; }
+  li { margin-bottom:1.6mm; }
+  li::marker { color:var(--mint-ink); }
+  strong { font-weight:600; }
+
+  .cover { height:213mm; display:flex; flex-direction:column; justify-content:space-between; break-after:page;
+           background:var(--ink); color:#fff; margin:0; padding:18mm 12mm 16mm; }
+  .cover .kicker { font-size:9pt; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--mint); }
+  .cover h1 { font-size:34pt; line-height:1; font-weight:800; margin-top:8mm; }
+  .cover h1 em { color:var(--mint); }
+  .cover .meta { font-size:11pt; color:#bdbdb7; }
+  .cover .meta b { color:#fff; font-weight:600; display:block; font-size:12pt; margin-bottom:1mm; }
+  .cover .stamp { border-top:1px solid #2c2e2e; padding-top:4mm; margin-top:5mm; }
+
+  section { margin-top:10mm; }
+  section:first-of-type { margin-top:0; }
+  .num { break-after:avoid; font-size:9pt; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--mint-ink); margin-bottom:2mm; }
+  h2 { font-size:21pt; line-height:1.08; font-weight:700; margin-bottom:5mm; }
+  h3 { font-size:14pt; font-weight:700; margin:6mm 0 2mm; }
+  .lead { color:var(--muted); }
+
+  .facts { border-top:2px solid var(--ink); margin:0 0 4mm; }
+  .facts div { border-bottom:1px solid var(--line); padding:2.6mm 0; break-inside:avoid; }
+  .facts dt { font-size:9pt; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--mint-ink); }
+  .facts dd { margin:.8mm 0 0; }
+
+  .box { background:var(--tint); border-radius:3mm; padding:4mm; margin:3mm 0; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+  .box h3 { margin-top:0; }
+  .box p:last-child, .box ul:last-child { margin-bottom:0; }
+
+  .pay { border-top:2px solid var(--ink); margin-bottom:4mm; }
+  .pay div { display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--line); padding:2.4mm 0; }
+  .pay b { font-family:"Inter Tight",sans-serif; font-size:16pt; color:var(--mint-ink); width:15mm; }
+  .pay span { flex:1; }
+  .pay i { font-style:normal; font-weight:600; }
+  .pay .total { border-bottom:2px solid var(--ink); }
+  .pay .total b { color:var(--ink); }
+
+  /* Gantt para página angosta: 56 días del 16 oct al 11 dic */
+  .gantt { background:var(--ink); color:#d6d6d0; border-radius:3mm; padding:4mm 4mm 3mm; margin:3mm 0 4mm; break-inside:avoid; }
+  .g-axis { position:relative; height:5mm; font-size:7.5pt; color:#a9aaa4; border-bottom:1px solid #3a3c3c; margin-bottom:1.5mm; }
+  .g-axis span { position:absolute; left:calc(var(--d)/56*100%); transform:translateX(-50%); white-space:nowrap; }
+  .g-axis span:first-child { transform:none; } .g-axis span:last-child { transform:translateX(-100%); }
+  .g-row { padding:1.2mm 0; }
+  .g-row .t { display:flex; justify-content:space-between; font-size:10pt; }
+  .g-row .t small { font-size:9pt; color:#a9aaa4; }
+  .g-track { position:relative; height:3mm; margin-top:1mm; background:linear-gradient(90deg, transparent calc(38/56*100%), rgba(255,255,255,.07) calc(38/56*100%), rgba(255,255,255,.07) calc(49/56*100%), transparent calc(49/56*100%)); }
+  .g-bar { position:absolute; top:0; height:3mm; left:calc(var(--a)/56*100%); width:calc((var(--b) - var(--a))/56*100%); border-radius:2mm; background:#4a4d4c; }
+  .g-ms { position:absolute; top:.25mm; left:calc(var(--a)/56*100%); width:2.5mm; height:2.5mm; transform:translateX(-50%) rotate(45deg); background:#8a8d8b; }
+  .g-row.key .g-ms, .g-row.launch .g-bar { background:var(--mint); }
+  .g-row.launch .t { color:var(--mint); font-weight:600; }
+  .g-note { font-size:8.5pt; color:#a9aaa4; margin-top:2mm; }
+  .g-note i { display:inline-block; width:4mm; height:2.4mm; background:rgba(255,255,255,.14); vertical-align:middle; margin-right:1.5mm; }
+
+  .meet div { border-bottom:1px solid var(--line); padding:2.4mm 0; break-inside:avoid; }
+  .meet div:first-child { border-top:2px solid var(--ink); }
+  .meet b { display:block; } .meet small { color:var(--mint-ink); font-weight:600; font-size:10pt; }
+  .meet p { margin:.6mm 0 0; color:var(--muted); font-size:11.5pt; }
+
+  .cost div { border-bottom:1px solid var(--line); padding:2.4mm 0; break-inside:avoid; }
+  .cost div:first-child { border-top:2px solid var(--ink); }
+  .cost b { display:block; }
+  .cost p { margin:.6mm 0 0; color:var(--muted); font-size:11.5pt; }
+
+  .x { list-style:none; padding:0; }
+  .x li { padding-left:5mm; position:relative; }
+  .x li::before { content:"×"; position:absolute; left:0; color:#9b9a93; }
+
+  .small { font-size:10.5pt; color:var(--muted); }
+  .end { margin-top:5mm; padding-top:4mm; border-top:2px solid var(--mint); font-size:10.5pt; color:var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div>
+    <div class="kicker">Propuesta ajustada · Rediseño web</div>
+    <h1>Crecieron como equipo. Ahora <em>su web</em> crece con ustedes.</h1>
+  </div>
+  <div class="meta">
+    <b>GetRebelEdits</b>
+    7 de octubre de 2026 · Andrés Ladino y Sandra Milena
+    <div class="stamp">10.000.000 COP · 8 semanas · lanzamiento objetivo del 9 al 11 de diciembre de 2026. Propuesta válida hasta el 28 de octubre de 2026. Documento confidencial.</div>
+  </div>
+</div>
+
+<section>
+  <div class="num">1 · Resumen del acuerdo</div>
+  <h2>Qué se entrega, cuánto cuesta y <em>cuándo</em>.</h2>
+  <p>Acordamos rediseñar y publicar el sitio de GetRebelEdits por 10.000.000 COP, con un alcance cerrado de unas 115 horas de trabajo y una duración de 8 semanas desde que estén completos los accesos. El sitio se construye con Sanity y Next.js, con la identidad de marca actual.</p>
+  <p>Este documento fija qué se entrega, cuánto cuesta, cuándo y bajo qué condiciones.</p>
+  <dl class="facts">
+    <div><dt>Inversión</dt><dd>10.000.000 COP, con cuenta de cobro (sin IVA)</dd></div>
+    <div><dt>Horas incluidas</dt><dd>Hasta 115 h. El trabajo adicional se cotiza a 89.400 COP la hora</dd></div>
+    <div><dt>Duración</dt><dd>8 semanas de trabajo desde accesos completos</dd></div>
+    <div><dt>Lanzamiento objetivo</dt><dd>Semana del 7 de diciembre de 2026; si hay retrasos, desde el 12 de enero de 2027</dd></div>
+    <div><dt>Garantía</dt><dd>2 meses de acompañamiento después de publicar, para casos que pongan en riesgo la plataforma. Después, soporte extendido opcional</dd></div>
+    <div><dt>Vigencia</dt><dd>Hasta el 28 de octubre de 2026</dd></div>
+  </dl>
+</section>
+
+<section>
+  <div class="num">2 · Alcance incluido</div>
+  <h2>Cuatro plantillas, un panel y un sitio <em>medido</em>.</h2>
+  <p>El acuerdo cubre cuatro plantillas, un panel para que el equipo de GetRebelEdits publique sin ayuda técnica y un sitio medido antes y después del lanzamiento. Todo el sitio es en inglés.</p>
+
+  <h3>Investigación ligera</h3>
+  <ul>
+    <li>Una entrevista de 45 minutos con los socios y con quien hace las llamadas de venta, para entender qué preguntan los prospectos, qué objeciones aparecen, por qué deciden comprar y qué mensajes conviene unificar (por ejemplo, el tiempo de entrega).</li>
+    <li>Revisión de Microsoft Clarity, Google Analytics y Search Console.</li>
+    <li>Benchmark de 2 a 3 sitios.</li>
+    <li>Una reunión de priorización de 30 a 45 minutos y un informe breve con las prioridades.</li>
+  </ul>
+
+  <h3>Diseño</h3>
+  <ul>
+    <li>Sistema visual ligero y componentes de diseño.</li>
+    <li>Escritorio y celular de 4 plantillas: Home, Pricing, Portafolio/caso de estudio y Landing page. El Home también presenta las industrias, para no multiplicar las páginas. Las landing pages las genera y gestiona el equipo de GetRebelEdits desde Sanity.</li>
+    <li>De 4 a 5 bloques reutilizables para landing pages (por ejemplo: hero con video, beneficios, prueba social, precios o agenda, y FAQ con llamado final).</li>
+    <li>Una propuesta de arquitectura de información y, a partir de ella, 3 propuestas gráficas. Las presentamos una por una, para conversar el objetivo de cada una y evitar mezclas tipo Frankenstein. GetRebelEdits elige una.</li>
+    <li>Una ronda de ajustes sobre la propuesta elegida.</li>
+    <li>Requerimiento del cliente: microinteracciones en las muestras de video, con Higgsfield como referencia de interacción, y muestras divididas en segmentos según el formato de reproducción.</li>
+    <li>Requerimiento del cliente: la experiencia en celular es prioridad.</li>
+    <li>Requerimiento del diseño: parte de la información del sitio se entrega junto con los accesos.</li>
+  </ul>
+
+  <div class="box">
+    <h3>Qué es una plantilla y qué es un bloque de landing</h3>
+    <p><strong>Plantilla.</strong> El diseño completo de un tipo de página (Home, Pricing, Portafolio/caso de estudio y Landing page), en escritorio y celular, con sus secciones y sus campos editables en el panel. Se diseña y se programa una vez y se reutiliza con contenido distinto: la plantilla de caso de estudio, por ejemplo, sirve para cada proyecto del portafolio. Cambiar textos, imágenes y videos se hace desde el panel; cambiar la estructura de una plantilla es trabajo adicional.</p>
+    <p><strong>Bloque de landing.</strong> Una sección reutilizable que el equipo combina y reordena desde el panel para armar landing pages de campaña (/lp/nombre/) sin ayuda técnica. Cada bloque tiene campos editables y pocas variantes, como fondo claro u oscuro. Agregar un bloque o una variante nueva es trabajo adicional.</p>
+  </div>
+
+  <h3>Desarrollo</h3>
+  <ul>
+    <li>Sitio en Next.js publicado en el dominio actual, con las URLs actuales.</li>
+    <li>Panel de contenido en Sanity para portafolio (proyectos, videos, imágenes, textos y logos), textos del sitio y landing pages, con vista previa.</li>
+    <li>Videos servidos desde Mux o Wistia.</li>
+    <li>Conexión de las herramientas actuales: Google Tag Manager, Google Analytics, Meta Pixel, Clarity, Search Console, Cloudflare, la agenda y el chat de GoHighLevel.</li>
+    <li>Banner de consentimiento de cookies conectado a Clarity y Pixel.</li>
+    <li>Optimización de velocidad y SEO técnico: metadatos, sitemap y redirecciones.</li>
+    <li>La página Book a call (/get-started/) queda como una sección con el embed de GoHighLevel. Las páginas legales las entrega GetRebelEdits con su texto y nosotros las maquetamos.</li>
+  </ul>
+
+  <h3>Medición y lanzamiento</h3>
+  <ul>
+    <li>Línea base antes de migrar, eventos configurados y un reporte a los 30 días del lanzamiento.</li>
+    <li>Pruebas internas en navegadores y dispositivos, y 5 días hábiles de pruebas del cliente.</li>
+    <li>Publicación: el paso de WordPress a código propio publicado en Vercel. Durante el cambio el sitio web puede quedar fuera de línea desde unas horas hasta 2 días en el peor caso, con un aviso de sitio en construcción. El correo no se interrumpe.</li>
+    <li>Una capacitación grabada, un manual de uso y la documentación técnica (accesos, DNS, variables de entorno y procedimientos).</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">3 · Fuera del alcance</div>
+  <h2>Lo que <em>no</em> incluye.</h2>
+  <p>Cualquier pedido de esta lista, o uno nuevo, se trata por control de cambios (sección 7) y se cotiza a 89.400 COP la hora.</p>
+  <ul class="x">
+    <li>Producción de videos y compra de fotos de banco.</li>
+    <li>Redacción completa de copy nuevo, blog o contenidos SEO.</li>
+    <li>Redacción y revisión legal de políticas, términos y cookies.</li>
+    <li>Revisión del inglés por un hablante nativo.</li>
+    <li>Cambios de logo o de identidad de marca.</li>
+    <li>Integraciones nuevas, distintas a las actuales.</li>
+    <li>Más de 4 plantillas o más de 5 bloques de landing.</li>
+    <li>Auditoría formal de accesibilidad (WCAG), un segundo reporte de medición y una segunda capacitación.</li>
+    <li>Versiones del sitio en otros idiomas.</li>
+    <li>Limpieza de un sitio comprometido y gestión de campañas pagadas.</li>
+    <li>Soporte, mantenimiento y actualizaciones después de los 2 meses de garantía, que se contratan como soporte extendido.</li>
+    <li>Mejoras y cambios profundos al sitio, que se cotizan de forma independiente.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">4 · Inversión y forma de pago</div>
+  <h2>Un precio cerrado, en <em>tres pagos</em>.</h2>
+  <p>La inversión es de 10.000.000 COP en tres pagos atados a hitos del proyecto.</p>
+  <div class="pay">
+    <div><b>40%</b><span>Al firmar el contrato</span><i>4.000.000</i></div>
+    <div><b>30%</b><span>Al aprobar el diseño</span><i>3.000.000</i></div>
+    <div><b>30%</b><span>Al publicar el sitio</span><i>3.000.000</i></div>
+    <div class="total"><b>Total</b><span></span><i>10.000.000 COP</i></div>
+  </div>
+  <ul>
+    <li>Cada pago se cobra con cuenta de cobro, porque no somos responsables de IVA. GetRebelEdits emite el documento soporte que corresponda según su régimen tributario.</li>
+    <li>Cada cuenta de cobro se paga en un máximo de 10 días hábiles. Los pagos atrasados generan intereses de mora a la tasa máxima legal vigente certificada por la Superintendencia Financiera.</li>
+    <li>Las 115 horas son un tope. El trabajo adicional se cotiza a 89.400 COP la hora y solo se ejecuta con aprobación escrita.</li>
+  </ul>
+
+  <h3>Costos de terceros</h3>
+  <p>Los paga GetRebelEdits directamente a cada proveedor y no hacen parte de los 10.000.000 COP. Son precios de referencia de septiembre de 2026 y pueden cambiar.</p>
+  <div class="cost">
+    <div><b>Vercel Pro (publicación del sitio)</b><p>USD 20/mes con un asiento de desarrollo; cada asiento adicional cuesta USD 20/mes.</p></div>
+    <div><b>Sanity (panel de contenido)</b><p>Gratis hasta 20 usuarios y 10.000 documentos; después USD 15 por usuario al mes.</p></div>
+    <div><b>Mux o Wistia (video)</b><p>Mux es pago por uso, estimado en menos de USD 5/mes. Wistia queda como alternativa, porque ya lo usan; la elección se define según el costo mensual y las métricas por video.</p></div>
+    <div><b>Consentimiento de cookies</b><p>Plan gratis o de pago según el tráfico.</p></div>
+    <div><b>GoHighLevel</b><p>El plan actual.</p></div>
+  </div>
+  <p class="small" style="margin-top:3mm">También quedan por fuera la producción de videos, las fotos de banco, la revisión legal y la revisión del inglés. Los pagos en dólares se hacen con tarjeta internacional y pueden llevar IVA por servicios digitales del exterior y el 4x1000; conviene confirmarlo con su contador.</p>
+</section>
+
+<section>
+  <div class="num">5 · Cronograma y fechas clave</div>
+  <h2>Lanzar el 9 de diciembre exige contenido el <em>20 de noviembre</em>.</h2>
+  <p>El trabajo toma 8 semanas desde que están completos los accesos: si arrancamos el 16 de octubre de 2026, el lanzamiento cabe entre el 9 y el 11 de diciembre.</p>
+
+  <div class="gantt">
+    <div class="g-axis"><span style="--d:0">16 oct</span><span style="--d:14">30 oct</span><span style="--d:28">13 nov</span><span style="--d:42">27 nov</span><span style="--d:56">11 dic</span></div>
+    <div class="g-row"><div class="t">Accesos y firma <small>16 oct</small></div><div class="g-track"><i class="g-ms" style="--a:0;left:1.3mm"></i></div></div>
+    <div class="g-row"><div class="t">Investigación ligera <small>19 a 23 oct</small></div><div class="g-track"><i class="g-bar" style="--a:3;--b:7"></i></div></div>
+    <div class="g-row"><div class="t">Diseño y 1 ronda <small>26 oct a 6 nov</small></div><div class="g-track"><i class="g-bar" style="--a:10;--b:21"></i></div></div>
+    <div class="g-row"><div class="t">Desarrollo <small>2 a 27 nov</small></div><div class="g-track"><i class="g-bar" style="--a:17;--b:42"></i></div></div>
+    <div class="g-row"><div class="t">Migración y medición <small>16 a 27 nov</small></div><div class="g-track"><i class="g-bar" style="--a:31;--b:42"></i></div></div>
+    <div class="g-row key"><div class="t">Contenido del cliente <small>20 nov</small></div><div class="g-track"><i class="g-ms" style="--a:35"></i></div></div>
+    <div class="g-row"><div class="t">Pruebas del cliente <small>30 nov a 4 dic</small></div><div class="g-track"><i class="g-bar" style="--a:45;--b:49"></i></div></div>
+    <div class="g-row launch"><div class="t">Lanzamiento objetivo <small style="color:inherit">9 a 11 dic</small></div><div class="g-track"><i class="g-bar" style="--a:54;--b:56"></i></div></div>
+    <div class="g-note"><i></i>Sin publicar del 23 de noviembre al 4 de diciembre (Black Friday)</div>
+  </div>
+
+  <ul>
+    <li>No publicamos entre el 23 de noviembre y el 4 de diciembre (Black Friday es el 27 de noviembre) ni entre el 14 de diciembre y el 12 de enero, para no afectar campañas activas. Si el lanzamiento no cabe en la semana del 7 de diciembre, pasa a partir del 12 de enero de 2027.</li>
+    <li>El cronograma ya cuenta los festivos de Colombia: 2 y 16 de noviembre, 8 y 25 de diciembre, 1 y 11 de enero.</li>
+    <li>El contenido del cliente es la mayor dependencia. La fecha límite es el 20 de noviembre; lo que no llegue se publica con contenido provisional.</li>
+    <li>Las pruebas del cliente (5 días hábiles) van del 30 de noviembre al 4 de diciembre.</li>
+  </ul>
+
+  <h3>Reuniones y fechas estimadas</h3>
+  <p class="small">Se confirman al agendar, según la disponibilidad de ambas partes.</p>
+  <div class="meet">
+    <div><b>Llamada de dudas</b><small>Martes 13 de octubre de 2026</small><p>30 minutos para resolver dudas antes de firmar.</p></div>
+    <div><b>Reunión de inicio</b><small>Lunes 19 de octubre</small><p>Arranca el cronograma con los accesos completos del 16 de octubre.</p></div>
+    <div><b>Entrevista con los socios</b><small>Martes 20 de octubre</small><p>45 minutos con los socios y con quien hace las llamadas de venta.</p></div>
+    <div><b>Reunión de priorización</b><small>Viernes 23 de octubre</small><p>De 30 a 45 minutos. Cierra la semana 1 con el informe breve de prioridades.</p></div>
+    <div><b>Presentación del diseño</b><small>Viernes 6 de noviembre</small><p>Inicia la ronda de ajustes; los comentarios llegan a más tardar el 11 de noviembre.</p></div>
+    <div><b>Capacitación y entrega</b><small>Jueves 10 de diciembre</small><p>Sesión grabada, manual y documentación, en la semana de lanzamiento (9 al 11 de diciembre).</p></div>
+    <div><b>Reporte de medición</b><small>Martes 12 de enero de 2027</small><p>Reporte a los 30 días del lanzamiento, contra la línea base.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="num">6 · Responsabilidades de GetRebelEdits</div>
+  <h2>Lo que necesitamos <em>de su lado</em>.</h2>
+  <p>El cronograma depende de que estas cosas lleguen a tiempo.</p>
+  <ul>
+    <li>Accesos completos a más tardar el 16 de octubre de 2026: hosting actual, Cloudflare, Google Tag Manager, Meta, GoHighLevel, Google Analytics, Clarity y Search Console.</li>
+    <li>Un contacto único, designado en la primera semana, que aprueba cada entrega y consolida los comentarios de los socios.</li>
+    <li>Disponibilidad de los socios y de quien hace las llamadas de venta para la entrevista y la reunión de priorización de la semana 1.</li>
+    <li>Contenido a más tardar el 20 de noviembre de 2026: videos, testimonios con nombre, cargo y empresa, logos autorizados y cifras verificables. Lo que no llegue se publica con contenido provisional y se reemplaza después desde el panel.</li>
+    <li>Textos. Los textos actuales son la base: los ajustamos y corregimos, no redactamos desde cero. Las políticas de privacidad, términos y cookies las entrega GetRebelEdits o las redacta un abogado.</li>
+    <li>Revisión del inglés por un hablante nativo designado por GetRebelEdits.</li>
+    <li>Cuentas y licencias a nombre de GetRebelEdits (GitHub, Vercel, Sanity, Mux o Wistia) y pago directo de los servicios de terceros.</li>
+    <li>Pruebas del sitio durante 5 días hábiles antes de publicar.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">7 · Aceptación, rondas y cambios</div>
+  <h2>Reglas claras para <em>las dos partes</em>.</h2>
+  <h3>Aceptación</h3>
+  <ul>
+    <li>Un único contacto de GetRebelEdits aprueba cada entrega.</li>
+    <li>Si una entrega no recibe observaciones en 5 días hábiles, se da por aprobada, para no poner en riesgo el cronograma.</li>
+    <li>Si GetRebelEdits pospone el lanzamiento por decisión propia, el pago final se cobra a los 10 días hábiles de tener el sitio listo para publicar.</li>
+    <li>En cada entrega informamos cuántas de las 115 horas se han usado.</li>
+  </ul>
+  <h3>Rondas</h3>
+  <ul>
+    <li>El diseño parte de la arquitectura de información y de 3 propuestas gráficas presentadas una por una. Sobre la elegida hay 1 ronda de ajustes, con un solo documento de comentarios consolidados que el contacto único envía dentro de los 3 días hábiles siguientes a la entrega.</li>
+    <li>El desarrollo incluye 1 ronda de correcciones. Un defecto (algo que no funciona como se diseñó y aprobó) se corrige sin costo. Un cambio (algo distinto a lo aprobado) pasa por control de cambios.</li>
+    <li>Después de aprobar el diseño, cualquier cambio de dirección visual o de estructura pasa por control de cambios.</li>
+  </ul>
+  <div class="box">
+    <h3>Control de cambios</h3>
+    <p>Toda solicitud fuera del alcance se hace por escrito. Respondemos con una estimación en horas, a 89.400 COP la hora, y con su efecto en el cronograma. Solo se ejecuta con aprobación escrita.</p>
+  </div>
+</section>
+
+<section>
+  <div class="num">8 · Demoras, pausa y cancelación</div>
+  <h2>Si algo se <em>retrasa</em>.</h2>
+  <h3>Demoras de GetRebelEdits</h3>
+  <ul>
+    <li>El cronograma arranca cuando todos los accesos están completos. Si se completan después del 16 de octubre, todas las fechas se corren el mismo número de días.</li>
+    <li>Si no recibimos respuesta, materiales o aprobaciones durante 10 días hábiles, el proyecto se pausa y el cronograma se corre.</li>
+    <li>Reanudar un proyecto pausado cuesta el 10% del valor pendiente, según la disponibilidad del equipo.</li>
+    <li>Después de 45 días calendario en pausa, el proyecto se cierra y se cobra lo avanzado hasta esa fecha.</li>
+    <li>Si el contenido no llega a tiempo, se publica con contenido provisional y el pago final no se corre.</li>
+  </ul>
+  <h3>Demoras del equipo</h3>
+  <ul>
+    <li>Si nos retrasamos por causas propias, avisamos con al menos 3 días hábiles de antelación y reprogramamos la fecha sin costo para GetRebelEdits.</li>
+    <li>Las dos personas del equipo se cubren entre sí y la documentación se mantiene al día, para que la ausencia de una no detenga el proyecto.</li>
+  </ul>
+  <h3>Cancelación</h3>
+  <p>Cualquiera de las partes puede terminar el proyecto con aviso escrito. En ese caso:</p>
+  <ul>
+    <li>el anticipo del 40% no es reembolsable;</li>
+    <li>se cobra el trabajo realizado hasta la fecha, según la fase en curso;</li>
+    <li>se entrega lo desarrollado hasta ese momento, una vez pagado.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">9 · Propiedad intelectual y licencias</div>
+  <h2>Todo queda <em>a su nombre</em>.</h2>
+  <ul>
+    <li>Los derechos patrimoniales sobre el diseño y el código hechos para GetRebelEdits se ceden por escrito cuando se recibe el pago final.</li>
+    <li>Conservamos los derechos sobre herramientas, componentes genéricos y código que ya teníamos o que no es específico del proyecto. GetRebelEdits recibe una licencia de uso permanente y gratuita sobre ellos.</li>
+    <li>Todo el código pasa por revisión del equipo y no incluimos contenido de terceros sin licencia.</li>
+    <li>Tipografías, íconos, fotos de banco, plugins y servicios se adquieren a nombre de GetRebelEdits o son de licencia libre. El repositorio de código vive en la cuenta de GitHub de GetRebelEdits.</li>
+    <li>Podemos mostrar el proyecto en nuestro portafolio solo con aprobación previa de GetRebelEdits, sin revelar información confidencial ni clientes white label.</li>
+  </ul>
+
+  <div class="num" style="margin-top:8mm">10 · Confidencialidad y protección de datos</div>
+  <ul>
+    <li>Firmamos un acuerdo de confidencialidad recíproco antes de empezar. Cubre la información de negocio, los clientes (en especial los white label), los materiales, los precios y los accesos, durante el proyecto y 2 años después de terminado.</li>
+    <li>Las credenciales quedan en un gestor de contraseñas de GetRebelEdits, no en cuentas personales nuestras.</li>
+    <li>GetRebelEdits es responsable del tratamiento de los datos de sus visitantes y clientes, según la Ley 1581 de 2012 de Colombia. Como su público es en inglés, conviene cumplir también las expectativas de normas como GDPR (Europa) y CCPA (California).</li>
+    <li>Implementamos el banner de consentimiento y conectamos Clarity y Pixel para que solo se activen con consentimiento. Los textos de política de privacidad, términos y cookies los entrega GetRebelEdits o los redacta un abogado; nosotros los maquetamos.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">11 · Garantía y después del lanzamiento</div>
+  <h2>Después de <em>publicar</em>.</h2>
+  <ul>
+    <li>Garantía de 2 meses de acompañamiento desde la publicación. Cubre sin costo los casos que pongan en riesgo la plataforma, incluidas las integraciones que dejen de funcionar por causa del proyecto.</li>
+    <li>Después de los 2 meses, GetRebelEdits puede contratar un soporte extendido. Además de los casos graves, incluye actualizaciones de librerías y mantenimiento de los servicios y de terceros. Se cotiza aparte.</li>
+    <li>Las mejoras y los cambios profundos al sitio no hacen parte de la garantía ni del soporte extendido: se cotizan de forma independiente.</li>
+    <li>Las actualizaciones mayores de Next.js y Sanity hacen parte del soporte extendido o quedan a cargo de GetRebelEdits. El panel permite actualizar contenido sin desarrollador.</li>
+    <li>Entregamos documentación técnica completa y las cuentas quedan a nombre de GetRebelEdits, para que cualquier otro proveedor pueda continuar.</li>
+  </ul>
+  <div class="box">
+    <h3>Plan de reversa</h3>
+    <p>El WordPress anterior sigue activo 60 días después del lanzamiento. Antes de cancelar ese hosting, GetRebelEdits archiva una copia completa (archivos y base de datos) en su cuenta de almacenamiento.</p>
+  </div>
+
+  <div class="num" style="margin-top:8mm">12 · Límite de responsabilidad y vigencia</div>
+  <ul>
+    <li>Nuestra responsabilidad total se limita al valor pagado por el proyecto. No respondemos por daños indirectos, lucro cesante ni fallas de proveedores externos (Vercel, Sanity, Mux, Wistia, Cloudflare, GoHighLevel, Google o Meta).</li>
+    <li>Objetivo de velocidad, no garantía: nota de 90 o más en celular en PageSpeed Insights y contenido principal visible en menos de 2,5 segundos, medidos en Home y Pricing al lanzar. Las herramientas de terceros (Tag Manager, Pixel, Clarity y el chat de GoHighLevel) pueden bajar la nota; reportamos la medición con y sin ellas.</li>
+    <li>Esta propuesta es válida hasta el 28 de octubre de 2026. Las fechas suponen firma y accesos completos el 16 de octubre; si ocurren después, las fechas se corren.</li>
+    <li>Las condiciones se formalizan en un contrato y en un acuerdo de confidencialidad. Recomendamos revisarlos con un abogado.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="num">13 · Próximos pasos y aceptación</div>
+  <h2>Empecemos a mostrar <em>lo que ya hacen bien</em>.</h2>
+  <ol>
+    <li>GetRebelEdits y su socio revisan esta propuesta y confirman alcance, precio y fechas.</li>
+    <li>Resolvemos las dudas en una llamada de 30 minutos.</li>
+    <li>Firma del contrato y del acuerdo de confidencialidad, y pago del 40% (4.000.000 COP).</li>
+    <li>Entrega de accesos y designación del contacto único, a más tardar el 16 de octubre de 2026.</li>
+    <li>Reunión de inicio: el cronograma arranca cuando los accesos están completos.</li>
+  </ol>
+  <div class="end">Andrés Ladino y Sandra Milena · amladi.dev<br>amladinon94@gmail.com<br>WhatsApp +57 312 425 0022<br>Documento confidencial preparado para GetRebelEdits.</div>
+</section>
+
+</body>
+</html>

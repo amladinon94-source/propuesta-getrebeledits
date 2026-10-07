@@ -7,6 +7,8 @@ One page para presentar la propuesta de rediseño web a GetRebelEdits. HTML y CS
 - `index.html`: la página.
 - `styles.css`: estilos.
 - `propuesta-completa.pdf`: la propuesta completa, descargable desde la página.
+- `pdf-fuente/propuesta.html`: la fuente del PDF (formato 120 × 213 mm para leer en celular). Para regenerarlo:
+  `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --no-pdf-header-footer --print-to-pdf=propuesta-completa.pdf pdf-fuente/propuesta.html`
 - `robots.txt` y la etiqueta `noindex`: piden a los buscadores no mostrar la página.
 - `.nojekyll`: publica los archivos tal cual en GitHub Pages.
 
